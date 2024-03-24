@@ -2,15 +2,22 @@
 const express = require('express');
 const app = express();
 
-mongoose.connect('mongodb://localhost/mydatabase', { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Connected to MongoDB...'))
-  .catch(err => console.error('Could not connect to MongoDB...', err));
+// const uri = `mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@deep-dark-dev-174bb6b0.mongo.ondigitalocean.com/${process.env.DATABASE}`;
+
+// mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+//   .then(() => console.log('Connected to MongoDB...'))
+//   .catch(err => console.error('Could not connect to MongoDB...', err));
 
 // Middleware to parse JSON bodies
 app.use(express.json());
 
+// Database setup for first time run
+const setupRouter = require('./routes/setup'); // adjust the path to match your file structure
+app.use('/setup', setupRouter);
+
 // Users route
-app.use('/users', require('./routes/users'));
+const usersRouter = require('./routes/users'); // adjust the path to match your file structure
+app.use('/users', usersRouter);
 
 // Maps route
 // app.use('/maps', require('./routes/maps'));

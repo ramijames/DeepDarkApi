@@ -4,6 +4,27 @@ const router = express.Router();
 // Import your User model
 const User = require('../models/User');
 
+require('dotenv').config();
+const nano = require('nano')(`http://${process.env.DB_USER}:${process.env.DB_PASSWORD}@localhost:5984`);
+
+// Use the users database
+const dbUsers = 'deep-dark-' + process.env.ENVIRONMENT + '-users';
+const users = nano.use(dbUsers);
+
+// Create a test user
+router.get('/createtestuser', async (req, res) => {
+  const user = users.insert(
+      { username: 'testuser1', 
+        password: 'testpassword', 
+        email: 'test1@example.com' 
+      }, 'testuser1')
+    .then(() => console.log('User created'))
+    .catch(err => console.error(err));
+
+    res.json(user);
+});
+
+
 // Get all users
 router.get('/', async (req, res) => {
   // Fetch users from database here
