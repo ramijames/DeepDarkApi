@@ -1,0 +1,25 @@
+{
+  "name": "deep-dark-api",
+  "version": "0.0.1",
+  "description": "The API for Deep Dark, a Roguelike game with user-generated maps.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "express",
+    "api",
+    "deep-dark",
+    "roguelike",
+    "game",
+    "maps",
+    "user-generated"
+  ],
+  "author": "Rami James",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.1",
+    "mongoose": "^8.2.3"
+  }
+}
