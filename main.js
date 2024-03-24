@@ -19,6 +19,10 @@ app.use('/setup', setupRouter);
 const usersRouter = require('./routes/users'); // adjust the path to match your file structure
 app.use('/users', usersRouter);
 
+// Auth route
+const authRouter = require('./routes/auth');
+app.use('/auth', authRouter);
+
 // Maps route
 // app.use('/maps', require('./routes/maps'));
 

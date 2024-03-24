@@ -29,9 +29,15 @@ router.get('/createtestuser', async (req, res) => {
 
 // Get all users
 router.get('/', async (req, res) => {
-  // Fetch users from database here
-  const users = await User.find();
-  res.json(users);
+  try {
+    const allUsers = await users.list({ include_docs: true });
+    console.log(allUsers);
+    const userList = allUsers.rows.map(row => row.doc); // Changed variable name to userList
+    res.json(userList);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to get users' });
+  }
 });
 
 // Create a new user

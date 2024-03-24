@@ -1,27 +1,43 @@
-// const mongoose = require('mongoose');
+// Description: This file contains the User model.
 
-// const UserSchema = new mongoose.Schema({
-//   username: {
-//     type: String,
-//     required: true,
-//     unique: true,
-//     trim: true,
-//     minlength: 3
-//   },
-//   password: {
-//     type: String,
-//     required: true,
-//     minlength: 8
-//   },
-//   email: {
-//     type: String,
-//     required: true,
-//     unique: true
-//   }
-// }, {
-//   timestamps: true,
-// });
+require('dotenv').config();
+const nano = require('nano')(`http://${process.env.DB_USER}:${process.env.DB_PASSWORD}@localhost:5984`);
 
-// const User = mongoose.model('User', UserSchema);
+const dbUsers = 'deep-dark-' + process.env.ENVIRONMENT + '-users';
+const userDB = nano.use(dbUsers);
 
-// module.exports = User;
+const validateUser = (user) => {
+  const schema = {
+    username: {
+      type: 'string',
+      required: true,
+      unique: true,
+      trim: true,
+      minlength: 3
+    },
+    password: {
+      type: 'string',
+      required: true,
+      minlength: 8
+    },
+    email: {
+      type: 'string',
+      required: true,
+      unique: true
+    }
+  };
+
+  // Validate user against schema here
+  // If user is invalid, throw an error
+};
+
+const createUser = async (user) => {
+  validateUser(user);
+
+  const response = await userDB.insert(user);
+  return response;
+};
+
+module.exports = {
+  createUser
+};
