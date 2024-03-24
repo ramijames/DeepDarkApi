@@ -13,17 +13,19 @@ const users = nano.use(dbUsers);
 
 // Create a test user
 router.get('/createtestuser', async (req, res) => {
-  const user = users.insert(
+  try {
+    const user = await users.insert(
       { username: 'testuser1', 
         password: 'testpassword', 
         email: 'test1@example.com' 
-      }, 'testuser1')
-    .then(() => console.log('User created'))
-    .catch(err => console.error(err));
-
+      }, 'testuser1');
+    console.log('User created');
     res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to create user' });
+  }
 });
-
 
 // Get all users
 router.get('/', async (req, res) => {
@@ -32,20 +34,45 @@ router.get('/', async (req, res) => {
   res.json(users);
 });
 
-// Add a new user
-router.post('/', async (req, res) => {
-  // Extract user data from request body
-  const { name, email } = req.body;
+// Create a new user
+router.post('/create', async (req, res) => {
+  const { username, password, email } = req.body;
 
-  // Create a new user
-  const user = new User({ name, email });
+  if (!username || !password || !email) {
+    return res.status(400).json({ error: 'Username, password, and email are required' });
+  }
 
-  // Save the user to the database
   try {
-    const newUser = await user.save();
-    res.json(newUser);
+    const user = await users.insert({ username, password, email }, username);
+    res.json(user);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    console.error(err);
+    res.status(500).json({ error: 'Failed to create user' });
+  }
+});
+
+// Update a user's email
+router.put('/update', async (req, res) => {
+  const { username, email } = req.body;
+
+  if (!username || !email) {
+    return res.status(400).json({ error: 'Username and email are required' });
+  }
+
+  try {
+    // Get the user from the database
+    const user = await users.get(username);
+
+    // Update the user's email
+    user.email = email;
+
+    // Save the updated user back to the database
+    const updatedUser = await users.insert(user);
+
+    res.json(updatedUser);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update user' });
   }
 });
 
