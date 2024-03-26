@@ -34,6 +34,16 @@ router.post('/create', async (req, res) => {
   }
 
   try {
+    // Fetch all users
+    const allUsers = await users.list({ include_docs: true });
+
+    // Check if username or email already exists
+    const userExists = allUsers.rows.some(row => row.doc.username === username || row.doc.email === email);
+
+    if (userExists) {
+      return res.status(409).json({ error: 'Username or email already exists' });
+    }
+
     // Hash the password
     const hashedPassword = bcrypt.hashSync(password, 10);
 
