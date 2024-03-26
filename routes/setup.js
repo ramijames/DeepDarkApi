@@ -5,7 +5,7 @@ const nano = require('nano')(`http://${process.env.DB_USER}:${process.env.DB_PAS
 
 const dbUsers = 'deep-dark-' + process.env.ENVIRONMENT + '-users';
 
-// Get all users
+// Create the db
 router.get('/first-time', async (req, res) => {
   // Fetch users from database here
   nano.db.create(dbUsers)

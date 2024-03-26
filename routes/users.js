@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcrypt');
 
 // Import your User model
 const User = require('../models/User');
@@ -10,22 +11,6 @@ const nano = require('nano')(`http://${process.env.DB_USER}:${process.env.DB_PAS
 // Use the users database
 const dbUsers = 'deep-dark-' + process.env.ENVIRONMENT + '-users';
 const users = nano.use(dbUsers);
-
-// Create a test user
-router.get('/createtestuser', async (req, res) => {
-  try {
-    const user = await users.insert(
-      { username: 'testuser1', 
-        password: 'testpassword', 
-        email: 'test1@example.com' 
-      }, 'testuser1');
-    console.log('User created');
-    res.json(user);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to create user' });
-  }
-});
 
 // Get all users
 router.get('/', async (req, res) => {
@@ -49,8 +34,16 @@ router.post('/create', async (req, res) => {
   }
 
   try {
-    const user = await users.insert({ username, password, email }, username);
-    res.json(user);
+    // Hash the password
+    const hashedPassword = bcrypt.hashSync(password, 10);
+
+    // Create a new user
+    const user = { username, password: hashedPassword, email };
+
+    // Save the user to the database
+    const response = await users.insert(user);
+
+    res.json(response);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to create user' });

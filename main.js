@@ -1,15 +1,13 @@
 // Import necessary modules
 const express = require('express');
 const app = express();
-
-// const uri = `mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@deep-dark-dev-174bb6b0.mongo.ondigitalocean.com/${process.env.DATABASE}`;
-
-// mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-//   .then(() => console.log('Connected to MongoDB...'))
-//   .catch(err => console.error('Could not connect to MongoDB...', err));
+const cors = require('cors');
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+
+// Allowing CORS
+app.use(cors());
 
 // Database setup for first time run
 const setupRouter = require('./routes/setup'); // adjust the path to match your file structure
