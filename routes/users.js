@@ -85,4 +85,20 @@ router.put('/update', async (req, res) => {
   }
 });
 
+// TODO: Limit and paging doesn't work with nano (apparently)
+// I need a different solution for this
+router.get('/users', async (req, res) => {
+  const limit = parseInt(req.query.limit) || 10; // Default limit is 10
+  const skip = parseInt(req.query.skip) || 0; // Default skip is 0
+
+  try {
+    const allUsers = await users.list({ include_docs: true, limit, skip });
+    const userList = allUsers.rows.map(row => row.doc);
+    res.json(userList);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to get users' });
+  }
+});
+
 module.exports = router;
