@@ -24,6 +24,21 @@ const validateUser = (user) => {
       type: 'string',
       required: true,
       unique: true
+    },
+    score: {
+      type: 'number',
+      required: false,
+      default: 0
+    },
+    characters: {
+      type: 'array',
+      required: false,
+      default: []
+    },
+    dungeons: {
+      type: 'array',
+      required: false,
+      default: []
     }
   };
 
